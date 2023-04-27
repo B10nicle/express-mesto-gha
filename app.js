@@ -13,16 +13,17 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((request, response, next) => {
+  request.user = {
+    _id: '644a8291ec66de4e89f9cb62',
+  };
+  next();
+});
+
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
 async function start() {
-  app.use((req, res, next) => {
-    req.user = {
-      _id: '644a70e23f8648f801cf875e',
-    };
-    next();
-  });
   try {
     await mongoose.connect(MONGO_URL);
     console.log(`App connected to ${MONGO_URL}`);
