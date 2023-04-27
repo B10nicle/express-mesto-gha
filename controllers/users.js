@@ -13,7 +13,7 @@ module.exports.getUserById = (request, response) => {
 
   userSchema
     .findById(userId)
-    .orFail(new Error('Not found: Invalid userId'))
+    .orFail()
     .then((user) => response.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
