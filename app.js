@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cardRouter = require('./routes/cards');
-const userRouter = require('./routes/users');
+const { router } = require('express/lib/application');
 
 const {
   MONGO_URL = 'mongodb://localhost:27017/mestodb',
@@ -20,8 +19,7 @@ app.use((request, response, next) => {
   next();
 });
 
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
+app.use(router);
 
 async function start() {
   try {
