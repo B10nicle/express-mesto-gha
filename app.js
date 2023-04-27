@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 
-const {PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb'} = process.env;
+const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use('/cards', cardRouter);
 async function start() {
   app.use((req, res, next) => {
     req.user = {
-      _id: '644a686aa919fd03bc9eb197'
+      _id: '644a686aa919fd03bc9eb197',
     };
     next();
   });
