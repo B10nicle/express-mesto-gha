@@ -21,7 +21,7 @@ module.exports.getUserById = (request, response) => {
           .send({ message: 'Bad Request' });
       }
 
-      if (err.name === 'NativeError') {
+      if (err.name === 'DocumentNotFoundError') {
         return response.status(404)
           .send({ message: 'User with _id cannot be found' });
       }
