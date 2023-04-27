@@ -1,5 +1,3 @@
-const express = require('express');
-
 const router = require('express')
   .Router();
 
@@ -12,6 +10,5 @@ router.use('/*', (request, response) => {
   response.status(404)
     .send({ message: '404: Not Found' });
 });
-router.use(express.json());
 
 module.exports = router;
