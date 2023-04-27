@@ -3,11 +3,10 @@ const cardSchema = require('../models/card');
 module.exports.getCards = (request, response) => {
   cardSchema
     .find({})
-    .then(cards => response.status(200)
+    .then((cards) => response.status(200)
       .send(cards))
-    .catch(err => response.status(500)
-      .send({ message: err.message })
-    );
+    .catch((err) => response.status(500)
+      .send({ message: err.message }));
 };
 
 module.exports.deleteCard = (request, response) => {
@@ -24,7 +23,7 @@ module.exports.deleteCard = (request, response) => {
       return response.status(200)
         .send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         response.status(400)
           .send({ message: 'Card with _id cannot be found' });
@@ -38,7 +37,7 @@ module.exports.deleteCard = (request, response) => {
 module.exports.createCard = (request, response) => {
   const {
     name,
-    link
+    link,
   } = request.body;
   const owner = request.user._id;
 
@@ -46,11 +45,11 @@ module.exports.createCard = (request, response) => {
     .create({
       name,
       link,
-      owner
+      owner,
     })
-    .then(card => response.status(201)
+    .then((card) => response.status(201)
       .send(card))
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         response.status(400)
           .send({ message: 'Invalid data for card creation' });
@@ -66,9 +65,9 @@ module.exports.addLike = (request, response) => {
     .findByIdAndUpdate(
       request.params.cardId,
       { $addToSet: { likes: request.user._id } },
-      { new: true }
+      { new: true },
     )
-    .then(card => {
+    .then((card) => {
       if (!card) {
         return response.status(404)
           .send({ message: 'Not found: Invalid _id' });
@@ -77,7 +76,7 @@ module.exports.addLike = (request, response) => {
       return response.status(200)
         .send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         return response.status(400)
           .send({ message: 'Invalid data to add like' });
@@ -93,9 +92,9 @@ module.exports.deleteLike = (request, response) => {
     .findByIdAndUpdate(
       request.params.cardId,
       { $pull: { likes: request.user._id } },
-      { new: true }
+      { new: true },
     )
-    .then(card => {
+    .then((card) => {
       if (!card) {
         return response.status(404)
           .send({ message: 'Not found: Invalid _id' });
@@ -104,7 +103,7 @@ module.exports.deleteLike = (request, response) => {
       return response.status(200)
         .send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return response.status(400)
           .send({ message: 'Invalid data to delete like' });

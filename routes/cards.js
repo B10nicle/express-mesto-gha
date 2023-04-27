@@ -6,7 +6,7 @@ const {
   deleteCard,
   createCard,
   addLike,
-  deleteLike
+  deleteLike,
 } = require('../controllers/cards');
 
 cardRoutes.get('/', getCards);

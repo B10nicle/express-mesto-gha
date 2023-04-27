@@ -6,7 +6,7 @@ const userRouter = require('./routes/users');
 
 const {
   MONGO_URL = 'mongodb://localhost:27017/mestodb',
-  PORT = 3000
+  PORT = 3000,
 } = process.env;
 
 const app = express();

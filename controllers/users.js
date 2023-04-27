@@ -3,10 +3,9 @@ const userSchema = require('../models/user');
 module.exports.getUsers = (request, response) => {
   userSchema
     .find({})
-    .then(users => response.send(users))
-    .catch(err => response.status(500)
-      .send({ message: err.message })
-    );
+    .then((users) => response.send(users))
+    .catch((err) => response.status(500)
+      .send({ message: err.message }));
 };
 
 module.exports.getUserById = (request, response) => {
@@ -15,8 +14,8 @@ module.exports.getUserById = (request, response) => {
   userSchema
     .findById(userId)
     .orFail(new Error('Not found: Invalid userId'))
-    .then(user => response.send(user))
-    .catch(err => {
+    .then((user) => response.send(user))
+    .catch((err) => {
       if (err.name === 'CastError') {
         return response.status(400)
           .send({ message: 'Bad Request' });
@@ -36,18 +35,18 @@ module.exports.createUser = (request, response) => {
   const {
     name,
     about,
-    avatar
+    avatar,
   } = request.body;
 
   userSchema
     .create({
       name,
       about,
-      avatar
+      avatar,
     })
-    .then(user => response.status(201)
+    .then((user) => response.status(201)
       .send(user))
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         response.status(400)
           .send({ message: 'Invalid data to create user' });
@@ -61,7 +60,7 @@ module.exports.createUser = (request, response) => {
 module.exports.updateUser = (request, response) => {
   const {
     name,
-    about
+    about,
   } = request.body;
 
   userSchema
@@ -69,16 +68,16 @@ module.exports.updateUser = (request, response) => {
       request.user._id,
       {
         name,
-        about
+        about,
       },
       {
         new: true,
-        runValidators: true
-      }
+        runValidators: true,
+      },
     )
-    .then(user => response.status(200)
+    .then((user) => response.status(200)
       .send(user))
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return response.status(400)
           .send({ message: 'Invalid data to update user' });
@@ -98,12 +97,12 @@ module.exports.updateAvatar = (request, response) => {
       { avatar },
       {
         new: true,
-        runValidators: true
-      }
+        runValidators: true,
+      },
     )
-    .then(user => response.status(200)
+    .then((user) => response.status(200)
       .send(user))
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         response.status(400)
           .send({ message: 'Invalid data to update avatar' });
