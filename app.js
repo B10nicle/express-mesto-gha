@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { router } = require('express/lib/application');
+const router = require('./routes/router');
 
 const {
   MONGO_URL = 'mongodb://localhost:27017/mestodb',
