@@ -9,7 +9,7 @@ const {
 
 const app = express();
 
-router.use(express.json());
+app.use(express.json());
 
 app.use((request, response, next) => {
   request.user = {
