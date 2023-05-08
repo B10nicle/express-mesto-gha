@@ -1,63 +1,60 @@
-const userSchema = require('../models/user');
+/**
+ * @author Oleg Khilko
+ */
 
-module.exports.getUsers = (request, response) => {
+const userSchema = require('../models/user');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+
+module.exports.getUsers = (request, response, next) => {
   userSchema
     .find({})
     .then((users) => response.send(users))
-    .catch((err) => response.status(500)
-      .send({ message: err.message }));
+    .catch(next);
 };
 
-module.exports.getUserById = (request, response) => {
+module.exports.getUserById = (request, response, next) => {
   const { userId } = request.params;
 
   userSchema
     .findById(userId)
     .orFail()
-    .then((user) => response.send(user))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User cannot be found');
+      }
+      response.send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return response.status(400)
-          .send({ message: 'Bad Request' });
+        next(new BadRequestError('Incorrect id'));
+        return;
       }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return response.status(404)
-          .send({ message: 'User with _id cannot be found' });
-      }
-
-      return response.status(500)
-        .send({ message: err.message });
+      next(err);
     });
 };
 
-module.exports.createUser = (request, response) => {
-  const {
-    name,
-    about,
-    avatar,
-  } = request.body;
-
-  userSchema
-    .create({
-      name,
-      about,
-      avatar,
+module.exports.getUser = (request, response, next) => {
+  userSchema.findById(request.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User cannot be found');
+      }
+      response.status(200)
+        .send(user);
     })
-    .then((user) => response.status(201)
-      .send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        response.status(400)
-          .send({ message: 'Invalid data to create user' });
+      if (err.name === 'CastError') {
+        next(BadRequestError('Incorrect data'));
+      } else if (err.message === 'NotFound') {
+        next(new NotFoundError('User cannot be found'));
       } else {
-        response.status(500)
-          .send({ message: err.message });
+        next(err);
       }
     });
 };
 
-module.exports.updateUser = (request, response) => {
+module.exports.updateUser = (request, response, next) => {
   const {
     name,
     about,
@@ -75,20 +72,23 @@ module.exports.updateUser = (request, response) => {
         runValidators: true,
       },
     )
-    .then((user) => response.status(200)
-      .send(user))
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return response.status(400)
-          .send({ message: 'Invalid data to update user' });
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User cannot be found');
       }
-
-      return response.status(500)
-        .send({ message: err.message });
+      response.status(200)
+        .send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(BadRequestError('Incorrect data'));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.updateAvatar = (request, response) => {
+module.exports.updateAvatar = (request, response, next) => {
   const { avatar } = request.body;
 
   userSchema
@@ -104,11 +104,9 @@ module.exports.updateAvatar = (request, response) => {
       .send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        response.status(400)
-          .send({ message: 'Invalid data to update avatar' });
+        next(new BadRequestError('Incorrect data'));
       } else {
-        response.status(500)
-          .send({ message: err.message });
+        next(err);
       }
     });
 };
