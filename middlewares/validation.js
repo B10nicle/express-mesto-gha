@@ -15,7 +15,7 @@ const urlValidation = (url) => {
 };
 
 const IdValidation = (id) => {
-  let regex = /^[0-9a-fA-F]{24}$/;
+  const regex = /^[0-9a-fA-F]{24}$/;
   if (regex.test(id)) return id;
   throw new BadRequestError('Incorrect id');
 };
