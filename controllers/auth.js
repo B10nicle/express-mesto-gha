@@ -38,7 +38,7 @@ module.exports.createUser = (request, response, next) => {
             },
           ))
         .catch((err) => {
-          if (err.code === '11000') {
+          if (err.code === 11000) {
             return next(new ConflictError('The username with this email has already been registered'));
           }
           if (err.name === 'ValidationError') {
