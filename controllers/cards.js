@@ -50,7 +50,7 @@ module.exports.deleteCard = (request, response, next) => {
       if (!card.owner.equals(request.user._id)) {
         return next(new ForbiddenError('Card cannot be deleted'));
       }
-      return card.deleteOne().then(() => response.send({ message: 'Card was deleted' }));
+      return card.remove(card).then(() => response.send({ message: 'Card was deleted' }));
     })
     .catch(next);
 };
