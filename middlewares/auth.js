@@ -5,9 +5,8 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-// eslint-disable-next-line consistent-return
-module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
+module.exports = (request, response, next) => {
+  const { authorization } = request.headers;
   let payload;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -22,6 +21,6 @@ module.exports = (req, res, next) => {
     return next(new UnauthorizedError('You need to log in'));
   }
 
-  req.user = payload;
-  next();
+  request.user = payload;
+  return next();
 };

@@ -37,7 +37,6 @@ module.exports.createUser = (request, response, next) => {
               },
             },
           ))
-        // eslint-disable-next-line consistent-return
         .catch((err) => {
           if (err.code === '11000') {
             return next(new ConflictError('The username with this email has already been registered'));
@@ -45,7 +44,7 @@ module.exports.createUser = (request, response, next) => {
           if (err.name === 'ValidationError') {
             return next(new BadRequestError('Incorrect input'));
           }
-          next(err);
+          return next(err);
         });
     })
     .catch(next);
