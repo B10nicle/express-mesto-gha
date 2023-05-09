@@ -15,22 +15,6 @@ module.exports.getCards = (request, response, next) => {
     .catch(next);
 };
 
-module.exports.deleteCard = (request, response, next) => {
-  const { cardId } = request.params;
-
-  return cardSchema.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('User cannot be found');
-      }
-      if (!card.owner.equals(request.user._id)) {
-        return next(new ForbiddenError('Card cannot be deleted'));
-      }
-      return card.remove().then(() => response.send({ message: 'Card was deleted' }));
-    })
-    .catch(next);
-};
-
 module.exports.createCard = (request, response, next) => {
   const {
     name,
@@ -53,6 +37,22 @@ module.exports.createCard = (request, response, next) => {
         next(err);
       }
     });
+};
+
+module.exports.deleteCard = (request, response, next) => {
+  const { cardId } = request.params;
+
+  cardSchema.findById(cardId)
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('User cannot be found');
+      }
+      if (!card.owner.equals(request.user._id)) {
+        return next(new ForbiddenError('Card cannot be deleted'));
+      }
+      return card.remove().then(() => response.send({ message: 'Card was deleted' }));
+    })
+    .catch(next);
 };
 
 module.exports.addLike = (request, response, next) => {
