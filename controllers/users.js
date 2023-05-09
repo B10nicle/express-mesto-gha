@@ -18,7 +18,6 @@ module.exports.getUserById = (request, response, next) => {
 
   userSchema
     .findById(userId)
-    .orFail()
     .then((user) => {
       if (!user) {
         throw new NotFoundError('User cannot be found');
