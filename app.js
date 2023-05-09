@@ -30,7 +30,7 @@ app.use(auth);
 app.use(router);
 app.use(errors);
 
-/* app.use((error, request, response, next) => {
+app.use((error, request, response, next) => {
   const {
     status = 500,
     message,
@@ -42,7 +42,7 @@ app.use(errors);
         : message,
     });
   next();
-}); */
+});
 
 async function start() {
   try {
