@@ -18,7 +18,7 @@ module.exports.getCards = (request, response, next) => {
 module.exports.deleteCard = (request, response, next) => {
   const { cardId } = request.params;
 
-  cardSchema.findById(cardId)
+  return cardSchema.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('User cannot be found');
@@ -26,8 +26,7 @@ module.exports.deleteCard = (request, response, next) => {
       if (!card.owner.equals(request.user._id)) {
         return next(new ForbiddenError('Card cannot be deleted'));
       }
-      return card.remove()
-        .then(() => response.send({ message: 'Card was deleted' }));
+      return card.remove().then(() => response.send({ message: 'Card was deleted' }));
     })
     .catch(next);
 };
