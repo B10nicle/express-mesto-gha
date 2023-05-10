@@ -38,7 +38,7 @@ app.use((error, request, response, next) => {
   response.status(status)
     .send({
       message: status === 500
-        ? 'Server error'
+        ? 'На сервере произошла ошибка'
         : message,
     });
   next();
